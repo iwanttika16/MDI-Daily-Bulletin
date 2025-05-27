@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Kids Discovery</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f8ff;
+      padding: 20px;
+      max-width: 800px;
+      margin: auto;
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #2e8b57;
+    }
+    .section {
+      background: #ffffff;
+      padding: 15px;
+      margin: 20px 0;
+      border-radius: 10px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.05);
+    }
+    .section h2 {
+      color: #4b0082;
+    }
+  </style>
+</head>
+<body>
+  <h1>🌟 Daily Kids Discovery 🌟</h1>
+
+  <div class="section">
+    <h2>📅 Today's Date</h2>
+    <p id="date"></p>
+  </div>
+
+  <div class="section">
+    <h2>🎓 Educational Quote</h2>
+    <p id="quote"></p>
+  </div>
+
+  <div class="section">
+    <h2>🧠 General Knowledge Question</h2>
+    <p id="gk-question"></p>
+  </div>
+
+  <div class="section">
+    <h2>📜 Special Event Today</h2>
+    <p id="event"></p>
+  </div>
+
+  <div class="section">
+    <h2>📘 New Word</h2>
+    <p id="word"></p>
+  </div>
+
+  <script>
+    // Get today's date
+    const date = new Date();
+    document.getElementById("date").textContent = date.toDateString();
+
+    // Static example content arrays
+    const quotes = [
+      "Education is the most powerful weapon you can use to change the world. – Nelson Mandela",
+      "The beautiful thing about learning is that no one can take it away from you. – B.B. King",
+      "Learning never exhausts the mind. – Leonardo da Vinci"
+    ];
+
+    const gkQuestions = [
+      "Which planet is known as the Red Planet? (Answer: Mars)",
+      "Who wrote the national anthem of India? (Answer: Rabindranath Tagore)",
+      "What is the capital of Australia? (Answer: Canberra)"
+    ];
+
+    const events = {
+      "5-27": "Today is the birthday of Rachel Carson, a pioneer in environmental science.",
+      "1-26": "India celebrates Republic Day.",
+      "10-2": "Birth anniversary of Mahatma Gandhi."
+    };
+
+    const words = [
+      "Word: Benevolent – Meaning: Kind and generous",
+      "Word: Curious – Meaning: Eager to learn or know",
+      "Word: Diligent – Meaning: Hardworking and careful"
+    ];
+
+    // Random content generator
+    function getRandomItem(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    document.getElementById("quote").textContent = getRandomItem(quotes);
+    document.getElementById("gk-question").textContent = getRandomItem(gkQuestions);
+    document.getElementById("word").textContent = getRandomItem(words);
+
+    // Handle event based on today's date
+    const todayKey = `${date.getMonth()+1}-${date.getDate()}`;
+    document.getElementById("event").textContent = events[todayKey] || "No major event recorded for today.";
+  </script>
+</body>
+</html>
