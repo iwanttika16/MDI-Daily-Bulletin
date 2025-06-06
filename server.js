@@ -1,15 +1,16 @@
+require('dotenv').config();
 const express = require('express');
-const fetch = require('node-fetch');
 const mongoose = require('mongoose');
+const fetch = require('node-fetch');
 const cors = require('cors');
-const { MONGO_URI } = require('./config');
 
 const app = express();
 app.use(cors());
 app.use(express.static('public'));
+
+const MONGO_URI = process.env.MONGO_URI;
 const PORT = process.env.PORT || 3000;
 
-// MongoDB
 mongoose.connect(MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -22,11 +23,10 @@ const entrySchema = new mongoose.Schema({
   gk: Object,
   event: String,
 });
-
 const Entry = mongoose.model('Entry', entrySchema);
 
 app.get('/api/daily', async (req, res) => {
-  const today = new Date().toISOString().slice(0, 10); // e.g., 2025-05-27
+  const today = new Date().toISOString().slice(0, 10);
 
   let cached = await Entry.findOne({ date: today });
   if (cached) return res.json(cached);
@@ -39,22 +39,20 @@ app.get('/api/daily', async (req, res) => {
       fetch(`https://byabbe.se/on-this-day/${new Date().getMonth() + 1}/${new Date().getDate()}/events.json`)
     ]);
 
-    const quoteData = await quoteRes.json();
-    const wordData = await wordRes.json();
-    const gkData = await gkRes.json();
+    const quote = await quoteRes.json();
+    const word = await wordRes.json();
+    const gk = await gkRes.json();
     const eventData = await eventRes.json();
-
-    const gk = gkData.results[0];
     const event = eventData.events[Math.floor(Math.random() * eventData.events.length)];
 
     const dailyData = {
       date: today,
-      quote: `${quoteData.content} — ${quoteData.author}`,
-      word: wordData[0],
+      quote: `${quote.content} — ${quote.author}`,
+      word: word[0],
       gk: {
-        question: gk.question,
-        correct: gk.correct_answer,
-        options: [...gk.incorrect_answers, gk.correct_answer].sort(() => 0.5 - Math.random()),
+        question: gk.results[0].question,
+        correct: gk.results[0].correct_answer,
+        options: [...gk.results[0].incorrect_answers, gk.results[0].correct_answer].sort(() => 0.5 - Math.random())
       },
       event: `${event.year} – ${event.description}`
     };
@@ -62,10 +60,12 @@ app.get('/api/daily', async (req, res) => {
     await Entry.create(dailyData);
     res.json(dailyData);
 
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Something went wrong" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to fetch data" });
   }
 });
 
-app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+app.listen(PORT, () => {
+  console.log(`Server running at http://localhost:${PORT}`);
+});
