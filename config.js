@@ -1,3 +1,3 @@
 module.exports = {
-  MONGO_URI: "your_mongodb_connection_string_here"
+  MONGO_URI: "mongodb+srv://admin:admin234@cluster0.brwjg97.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 };
